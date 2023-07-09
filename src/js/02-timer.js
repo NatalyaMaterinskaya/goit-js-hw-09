@@ -2,10 +2,9 @@ import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 
 const inputEl = document.querySelector('#datetime-picker');
-console.log(inputEl);
 const btnStartEl = document.querySelector('button[data-start]');
 const timerEl = document.querySelector('.timer');
-const timerArrValue = [...timerEl.children].map(item => item.firstElementChild);
+const timerArrOfValues = [...timerEl.children].map(item => item.firstElementChild);
 
 btnStartEl.setAttribute('disabled', 'true');
 
@@ -32,11 +31,13 @@ btnStartEl.addEventListener('click', countdown);
 function countdown() {
   const chosenDay = new Date(inputEl.value).getTime();
   timerId = setInterval(() => {
-    let timeTo = chosenDay - new Date().getTime();
-    if (timeTo > 0) {
-      let convertTime = convertMs(timeTo);
-      console.log(convertTime.days);
-      setTimer(timerArrValue, convertTime);
+    let timeDifference = chosenDay - new Date().getTime();
+    if (timeDifference > 0) {
+      let  convertedTime = convertMs(timeDifference);
+      setTimer(timerArrOfValues, convertedTime);
+    }
+    else {
+      clearInterval(timerId);
     }
   }, 1000);
 }
@@ -58,16 +59,27 @@ function convertMs(ms) {
 function setTimer(arr, time) {
   for (let i = 0; i < arr.length; i++) {
     if (arr[i].hasAttribute('data-days')) {
-      arr[i].textContent = time.days;
+      arr[i].textContent =  addLeadingZero(time.days.toString());
+      continue;
     }
     if (arr[i].hasAttribute('data-hours')) {
-      arr[i].textContent = time.hours;
+      arr[i].textContent = addLeadingZero(time.hours.toString());
+      continue;
     }
     if (arr[i].hasAttribute('data-minutes')) {
-      arr[i].textContent = time.minutes;
+      arr[i].textContent = addLeadingZero(time.minutes.toString());
+      continue;
     }
     if (arr[i].hasAttribute('data-seconds')) {
-      arr[i].textContent = time.seconds;
+      arr[i].textContent = addLeadingZero(time.seconds.toString());
+      continue;
     }
   }
+}
+
+function addLeadingZero(value){
+  if (value.length < 2) {
+    value = value.padStart(2, '0');
+  } 
+    return value;
 }
