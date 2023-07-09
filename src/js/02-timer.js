@@ -4,6 +4,8 @@ import 'flatpickr/dist/flatpickr.min.css';
 const inputEl = document.querySelector('#datetime-picker');
 console.log(inputEl);
 const btnStartEl = document.querySelector('button[data-start]');
+const timerEl = document.querySelector('.timer');
+const timerArrValue = [...timerEl.children].map(item => item.firstElementChild);
 
 btnStartEl.setAttribute('disabled', 'true');
 
@@ -20,7 +22,7 @@ const options = {
     } else {
       btnStartEl.removeAttribute('disabled');
     }
-  }
+  },
 };
 
 flatpickr('#datetime-picker', options);
@@ -29,14 +31,13 @@ btnStartEl.addEventListener('click', countdown);
 
 function countdown() {
   const chosenDay = new Date(inputEl.value).getTime();
-  const currentDate = new Date().getTime();
-  let timeTo = chosenDay - currentDate;
   timerId = setInterval(() => {
-    
-    //const convertTimeTo = convertMs(timeTo);
-    console.log(timeTo);
-     console.log(convertMs(timeTo));
-    timeTo -= 1;
+    let timeTo = chosenDay - new Date().getTime();
+    if (timeTo > 0) {
+      let convertTime = convertMs(timeTo);
+      console.log(convertTime.days);
+      setTimer(timerArrValue, convertTime);
+    }
   }, 1000);
 }
 
@@ -52,4 +53,21 @@ function convertMs(ms) {
   const seconds = Math.floor((((ms % day) % hour) % minute) / second);
 
   return { days, hours, minutes, seconds };
+}
+
+function setTimer(arr, time) {
+  for (let i = 0; i < arr.length; i++) {
+    if (arr[i].hasAttribute('data-days')) {
+      arr[i].textContent = time.days;
+    }
+    if (arr[i].hasAttribute('data-hours')) {
+      arr[i].textContent = time.hours;
+    }
+    if (arr[i].hasAttribute('data-minutes')) {
+      arr[i].textContent = time.minutes;
+    }
+    if (arr[i].hasAttribute('data-seconds')) {
+      arr[i].textContent = time.seconds;
+    }
+  }
 }
