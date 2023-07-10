@@ -19,8 +19,9 @@ function onStart(event) {
 }
 
 function addPromise({ position, delay }, amountOfPromise, step) {
+  btnEl.setAttribute('disabled', 'true');
   for (let i = 1; i <= amountOfPromise; i += 1) {
-    position=i;
+    position = i;
     createPromise(position, delay)
       .then(({ position, delay }) => {
         console.log(`✅ Fulfilled promise ${position} in ${delay}ms`);
@@ -30,6 +31,9 @@ function addPromise({ position, delay }, amountOfPromise, step) {
       });
     delay += step;
   }
+  setTimeout(() => {
+    btnEl.removeAttribute('disabled');
+  }, delay);
 }
 
 function createPromise(position, delay) {
@@ -37,10 +41,10 @@ function createPromise(position, delay) {
     setTimeout(() => {
       const shouldResolve = Math.random() > 0.3;
       if (shouldResolve) {
-        res({position, delay });
+        res({ position, delay });
       } else {
         rej({ position, delay });
       }
-    },delay)
+    }, delay);
   });
 }
